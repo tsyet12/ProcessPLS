@@ -9,7 +9,7 @@ Implementation by Sin Yong Teng. Radboud University Nijmegen, the Netherlands.
 In this code implementation, the sklearn syntax is used. Furthermore, the ProcessPLS algorithm has been made to be represented in directed graphs data structure. This allows for more flexibility to be used with graph theory routines. 
 
 ## Reproducibility
-This implementation is provides the exactly same output as the MATLAB version of ProcessPLS.
+This implementation provides exactly the same output as the MATLAB version of ProcessPLS.
 
 ![ProcessPLS](https://user-images.githubusercontent.com/19692103/167320976-cf252fd0-5b0a-4463-b546-c6078c70b00c.png)
 
