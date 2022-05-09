@@ -1,4 +1,3 @@
-from sklearn.cross_decomposition import PLSRegression, PLSCanonical
 from sklearn.model_selection import KFold, RepeatedKFold
 import networkx as nx
 import pandas as pd
@@ -6,7 +5,7 @@ import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.model_selection import cross_validate
 from sklearn.preprocessing import StandardScaler, Normalizer
-from sklearn.pipeline import make_pipeline
+#from sklearn.pipeline import make_pipeline
 import matplotlib.pyplot as plt
 import math
 import warnings
@@ -167,7 +166,7 @@ class SIMPLS(BaseEstimator):
         X=np.asarray(X)
       except:
         pass 
-      y_pred=X@self.coef_#+self.B0
+      y_pred=X@self.coef_+self.B0
       
       return y_pred
 
@@ -308,9 +307,10 @@ class OuterScaler(BaseEstimator,TransformerMixin):
       X=X*self.Xstd+self.Xmean
       return X
 class ProcessPLS(BaseEstimator):
-  def __init__(self,cv=RepeatedKFold(5,1,random_state=999),scoring='neg_mean_squared_error',max_lv=30,overwrite_lv=False,inner_forced_lv=None,outer_forced_lv=None):
+  def __init__(self,cv=RepeatedKFold(5,1,random_state=999),scoring='neg_mean_squared_error',max_lv=30,overwrite_lv=False,inner_forced_lv=None,outer_forced_lv=None,name=None):
       self.__name__='ProcessPLS'
       self.cv=cv
+      self.name=name
       self.max_lv=max_lv
       self.scoring=scoring
       self.overwrite_lv=overwrite_lv
@@ -499,18 +499,23 @@ class ProcessPLS(BaseEstimator):
           G.add_edge(origin,target,full_effect=G[origin][target]["B"]+G[origin][target]["indirect_effect"]) #Put the full effect as sum of direct and indirect effects
           #print(origin,"-->", target)
           print("full effect")
-          print(G[origin][target]['full_effect'])
+          print(G[origin][target]['full_effect']) #LV on LV total
                   
       #### EFFECTS OF MV ON LV #######
 
       for node in G:
           if node not in list(Y.keys()):
-              var_cont=np.sum(G.nodes[node]["outer_model"].x_loadings_*G.nodes[node]["outer_model"].xfrac_var_,1)
+              var_cont=np.sum(G.nodes[node]["outer_model"].x_loadings_*G.nodes[node]["outer_model"].xfrac_var_,1)/np.sum(G.nodes[node]["outer_model"].xfrac_var_)
           else:
-              var_cont=np.sum(G.nodes[node]["outer_model"].y_loadings_*G.nodes[node]["outer_model"].yfrac_var_,1)
-          #print(G.nodes[node]["outer_x"].shape)
-          #print(var_cont)    
-       
+              var_cont=np.sum(G.nodes[node]["outer_model"].y_loadings_*G.nodes[node]["outer_model"].yfrac_var_,1)/np.sum(G.nodes[node]["outer_model"].yfrac_var_)
+          G.add_node(node, variable_contributions=var_cont)
+      #### CALCULATE EFFECTS OF MVS ON OTHER LVS and blocks (INNER EFFECTS) #####
+      for origin, target in G.edges():
+          G.add_edge(origin,target, MV_on_other_LV=G.nodes[origin]["outer_model"].x_weights_@G[origin][target]['full_effect']) #MVS ON OTHER LVS
+          G.add_edge(origin,target, MV_on_other_blocks=np.sum(G[origin][target]['MV_on_other_LV'],axis=1))####MV on other blocks####
+          #print('MV on LV and Blocks', origin, '-->', target)
+          #print(G[origin][target]['MV_on_other_LV'])
+          #print(G[origin][target]['MV_on_other_blocks'])
       self.G=G #update graph
   
   def predict(self, X,y=None):
@@ -542,7 +547,8 @@ class ProcessPLS(BaseEstimator):
         outer_scaler_y=G.nodes[node]["outer_scaler"]
     return outer_scaler_y.inverse_transform(y_pred)
     
-  def plot(self):
+  def plot(self,figsize=(6,6)):
+    plt.rc('figure',figsize=figsize)
     label_options = {"ec": "k", "fc": "white", "alpha": 0.5}
     edges=self.G.edges()
     weights = [self.G[u][v]['path_variances_explained'] for u,v in edges]
@@ -556,7 +562,8 @@ class ProcessPLS(BaseEstimator):
     ax.set_xlim([1.5*x for x in ax.get_xlim()])
     ax.set_ylim([1.5*y for y in ax.get_ylim()])
     ax.set_aspect('equal', adjustable='box')
-    plt.rc('figure',figsize=(15,15))
+    if self.name is not None:
+      ax.set_title(self.name,y=0.83)
     plt.show()
 
 
@@ -592,7 +599,7 @@ if __name__=="__main__":
   )
   
   #### MATLAB 1 LV CONSISTENCY TEST####
-  Model1LV=ProcessPLS(cv=RepeatedKFold(5,1,random_state=999), max_lv=1)
+  Model1LV=ProcessPLS(cv=RepeatedKFold(5,1,random_state=999), max_lv=1,name="Process PLS with 1 Outer LV ")
   Model1LV.fit(X,Y,matrix)
   print(Model1LV.predict(X))
   print(global_quality)
@@ -617,7 +624,7 @@ if __name__=="__main__":
   "Global Quality":13
   }
   
-  ModelWLV=ProcessPLS(cv=RepeatedKFold(5,1,random_state=999), max_lv=np.inf,overwrite_lv=True,inner_forced_lv=inner_forced_lv,outer_forced_lv=outer_forced_lv)
+  ModelWLV=ProcessPLS(cv=RepeatedKFold(5,1,random_state=999), max_lv=np.inf,overwrite_lv=True,inner_forced_lv=inner_forced_lv,outer_forced_lv=outer_forced_lv, name="Process PLS with W Outer LV")
   ModelWLV.fit(X,Y,matrix)
   ModelWLV.plot()
   
