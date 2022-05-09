@@ -18,6 +18,5 @@ This implementation provides exactly the same output as the MATLAB version of Pr
 ## Reference to Original Paper:
 van Kollenburg, G., Bouman, R., Offermans, T., Gerretzen, J., Buydens, L., van Manen, H.J. and Jansen, J., 2021. Process PLS: Incorporating substantive knowledge into the predictive modelling of multiblock, multistep, multidimensional and multicollinear process data. Computers & Chemical Engineering, 154, p.107466.
 
-MATLAB Implementation:
-See this repository below written by Tim Offermans.
+For MATLAB Implementation, see this repository written by Tim Offermans.
 https://gitlab.science.ru.nl/toffermans/matlab-process-pls/-/tree/main/
