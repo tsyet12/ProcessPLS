@@ -1,7 +1,7 @@
 import pkg_resources
 import pandas as pd
 def ValdeLoirData(original=False):
-    stream = pkg_resources.resource_stream(__name__, './data/ValdeLoirData.csv')
+    stream = pkg_resources.resource_stream(__name__, '/data/ValdeLoirData.csv')
     data=pd.read_csv(stream, encoding='utf-8')
     data=data.drop(columns=data.columns[0])
     if original==False:
@@ -36,7 +36,8 @@ def ValdeLoirData(original=False):
 
 
 def OilDistillationData(original=False):
-    stream = pkg_resources.resource_stream(__name__, './data/OilDistillationData.csv')
+
+    stream = pkg_resources.resource_filename(__name__, '/data/OilDistillationData.csv')
     data=pd.read_csv(stream, encoding='utf-8',header=None)
     
     if original==False:

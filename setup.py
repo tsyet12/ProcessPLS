@@ -16,7 +16,7 @@ if os.path.isfile(requirementPath):
 
 
 setup(name='ProcessPLS', 
-version='1.01', 
+version='1.05', 
 license='BSD 2-Clause',
 description="Implementation of ProcessPLS in Python",
 author='Sin Yong Teng',
@@ -25,6 +25,8 @@ long_description_content_type="text/markdown",
 author_email='tsyet12@gmail.com',
 keywords = ['Path Modelling', 'Chemometrics', 'Process Analytical Technology', 'Machine Learning'],
 packages=find_packages(),
+package_dir={'processPLS':'processPLS'},
+package_data={'processPLS':['data/*.csv']},
 setup_requires=install_requires,
 install_requires=install_requires,
 classifiers=[

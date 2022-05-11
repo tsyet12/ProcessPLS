@@ -82,11 +82,11 @@ class SIMPLS(BaseEstimator):
       self.var_=None #V
     def fit(self, X,y):
       try:
-        X=np.asarray(X,dtype=np.longdouble)
+        X=np.asarray(X)
       except:
         pass
       try:
-        y=np.asarray(y,dtype=np.longdouble)
+        y=np.asarray(y)
       except:
         pass
       if y.ndim<2:
@@ -506,7 +506,7 @@ class ProcessPLS(BaseEstimator):
         try:
           G.add_edge(origin,target,direct_effect=G[origin][target]["B"]) #Put the direct effect as B coefficient
           G.add_edge(origin,target,full_effect=G[origin][target]["B"]+G[origin][target]["indirect_effect"]) #Put the full effect as sum of direct and indirect effects
-          print("full effect")
+          print(origin,"-->",target," LV on LV full effect :")
           print(G[origin][target]['full_effect']) #LV on LV total
         except:
           pass
@@ -524,9 +524,10 @@ class ProcessPLS(BaseEstimator):
         try:
           G.add_edge(origin,target, MV_on_other_LV=G.nodes[origin]["outer_model"].x_weights_@G[origin][target]['full_effect']) #MVS ON OTHER LVS
           G.add_edge(origin,target, MV_on_other_blocks=np.sum(G[origin][target]['MV_on_other_LV'],axis=1))####MV on other blocks####
-          #print('MV on LV and Blocks', origin, '-->', target)
-          #print(G[origin][target]['MV_on_other_LV'])
-          #print(G[origin][target]['MV_on_other_blocks'])
+          print(origin, '-->', target,' MV on LV Effects :', )
+          print(G[origin][target]['MV_on_other_LV'])
+          print(origin, '-->', target,' MV on other blocks Effects :', )
+          print(G[origin][target]['MV_on_other_blocks'])
         except:
           pass
       self.G=G #update graph
