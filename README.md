@@ -65,7 +65,7 @@ plt.show()
 ```
 
 # Main Function Arguments
-```
+```python
 Process_PLS(cv=RepeatedKFold(n_splits=5,n_repeats=2,random_state=999),scoring='neg_mean_squared_error',max_lv=30,overwrite_lv=False,inner_forced_lv=None,outer_forced_lv=None,name=None)
 
 '''
