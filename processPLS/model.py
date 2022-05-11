@@ -479,27 +479,37 @@ class ProcessPLS(BaseEstimator):
                       pathlist=list(path) #define a path list
                       if len(pathlist)>1: #if path length is larger than 1, then it is not a direct path but an indirect path
                           path_effects_indirect=np.asarray([]) #R2 Restart Path Effects
+                          real_path=True #check if not skipped nodes, creating false path
                           for tup in pathlist:  #look into tuple steps of the path
-                              if path_effects_indirect.size==0:
-                                  path_effects_indirect=G[tup[0]][tup[1]]["B"]  #If path is new, take B coefficient initially
-                              else:    
-                                  path_effects_indirect=path_effects_indirect@(G[tup[0]][tup[1]]["B"]) #Multiply B coefficient across path
+                            if real_path:
+                              try:
+                                if path_effects_indirect.size==0:
+                                    path_effects_indirect=G[tup[0]][tup[1]]["B"]  #If path is new, take B coefficient initially
+                                    pass
+                                else:    
+                                    path_effects_indirect=path_effects_indirect@(G[tup[0]][tup[1]]["B"]) #Multiply B coefficient across path
+                              except:
+                                path_effects_indirect=0
+                                real_path=False
                           if indirect.size==0:
                               indirect=path_effects_indirect  #R2 take path effects if indirect variable is not defined
                           else:    
                               indirect=indirect+path_effects_indirect #R2 Add indirect path effects of different paths with same node
-              if len(indirect)!=0: #if there is an indirect effect
-                  G.add_edge(origin,target,indirect_effect=indirect) #add the indirect effect matrix in edge                     
-              elif G.has_edge(origin,target):  #else if there is no indirect effect, but a connection with direct effect
-                  G.add_edge(origin,target,indirect_effect=0) #put indirect effect of 0
+              if G.has_edge(origin,target): #only record indirect effects when there is a direct effect
+                if len(indirect)!=0: #if there is an indirect effect
+                    G.add_edge(origin,target,indirect_effect=indirect) #add the indirect effect matrix in edge                     
+                elif G.has_edge(origin,target):  #else if there is no indirect effect, but a connection with direct effect
+                    G.add_edge(origin,target,indirect_effect=0) #put indirect effect of 0
 
       #### DIRECT EFFECTS AND FULL EFFECTS####
       for origin, target in G.edges():
+        try:
           G.add_edge(origin,target,direct_effect=G[origin][target]["B"]) #Put the direct effect as B coefficient
           G.add_edge(origin,target,full_effect=G[origin][target]["B"]+G[origin][target]["indirect_effect"]) #Put the full effect as sum of direct and indirect effects
-          #print(origin,"-->", target)
           print("full effect")
           print(G[origin][target]['full_effect']) #LV on LV total
+        except:
+          pass
                   
       #### EFFECTS OF MV ON LV #######
 
@@ -511,11 +521,14 @@ class ProcessPLS(BaseEstimator):
           G.add_node(node, variable_contributions=var_cont)
       #### CALCULATE EFFECTS OF MVS ON OTHER LVS and blocks (INNER EFFECTS) #####
       for origin, target in G.edges():
+        try:
           G.add_edge(origin,target, MV_on_other_LV=G.nodes[origin]["outer_model"].x_weights_@G[origin][target]['full_effect']) #MVS ON OTHER LVS
           G.add_edge(origin,target, MV_on_other_blocks=np.sum(G[origin][target]['MV_on_other_LV'],axis=1))####MV on other blocks####
           #print('MV on LV and Blocks', origin, '-->', target)
           #print(G[origin][target]['MV_on_other_LV'])
           #print(G[origin][target]['MV_on_other_blocks'])
+        except:
+          pass
       self.G=G #update graph
   
   def predict(self, X,y=None):
@@ -568,8 +581,10 @@ class ProcessPLS(BaseEstimator):
 
 
 
+
+
 if __name__=="__main__":      
-  df=pd.read_csv(r'C:\Users\User\Desktop\processPLS\processPLS\\ValdeLoirData.csv')
+  df=pd.read_csv(r'C:\Users\User\Desktop\processPLS\processPLS\data\ValdeLoirData.csv')
   df=df.drop(columns=df.columns[0])
   smell_at_rest=df.iloc[:,:5]
   view=df.iloc[:,5:8]
@@ -627,6 +642,8 @@ if __name__=="__main__":
   ModelWLV=ProcessPLS(cv=RepeatedKFold(n_splits=5,n_repeats=1,random_state=999), max_lv=np.inf,overwrite_lv=True,inner_forced_lv=inner_forced_lv,outer_forced_lv=outer_forced_lv, name="Process PLS with W Outer LV")
   ModelWLV.fit(X,Y,matrix)
   ModelWLV.plot()
+
+
   
   #######
   
