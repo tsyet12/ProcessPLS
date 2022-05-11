@@ -173,7 +173,7 @@ class SIMPLS(BaseEstimator):
       
 
 class PartialLeastSquaresCV(BaseEstimator):
-  def __init__(self,cv=RepeatedKFold(5,1,random_state=999),scoring='neg_mean_squared_error',epsilon=+0.0001,max_lv=30,forced_lv=None):
+  def __init__(self,cv=RepeatedKFold(n_splits=5,n_repeats=2,random_state=999),scoring='neg_mean_squared_error',epsilon=+0.0001,max_lv=30,forced_lv=None):
       self.__name__='PartialLeastSquaresCV'
       self.cv=cv
       self.model=None
@@ -307,7 +307,7 @@ class OuterScaler(BaseEstimator,TransformerMixin):
       X=X*self.Xstd+self.Xmean
       return X
 class ProcessPLS(BaseEstimator):
-  def __init__(self,cv=RepeatedKFold(5,1,random_state=999),scoring='neg_mean_squared_error',max_lv=30,overwrite_lv=False,inner_forced_lv=None,outer_forced_lv=None,name=None):
+  def __init__(self,cv=RepeatedKFold(n_splits=5,n_repeats=2,random_state=999),scoring='neg_mean_squared_error',max_lv=30,overwrite_lv=False,inner_forced_lv=None,outer_forced_lv=None,name=None):
       self.__name__='ProcessPLS'
       self.cv=cv
       self.name=name
@@ -569,7 +569,7 @@ class ProcessPLS(BaseEstimator):
 
 
 if __name__=="__main__":      
-  df=pd.read_csv(r'C:\\Users\\User\\Desktop\\processPLS\\ValdeLoirData.csv')
+  df=pd.read_csv(r'C:\Users\User\Desktop\processPLS\processPLS\\ValdeLoirData.csv')
   df=df.drop(columns=df.columns[0])
   smell_at_rest=df.iloc[:,:5]
   view=df.iloc[:,5:8]
@@ -599,7 +599,7 @@ if __name__=="__main__":
   )
   
   #### MATLAB 1 LV CONSISTENCY TEST####
-  Model1LV=ProcessPLS(cv=RepeatedKFold(5,1,random_state=999), max_lv=1,name="Process PLS with 1 Outer LV ")
+  Model1LV=ProcessPLS(cv=RepeatedKFold(n_splits=5,n_repeats=1,random_state=999), max_lv=1,name="Process PLS with 1 Outer LV ")
   Model1LV.fit(X,Y,matrix)
   print(Model1LV.predict(X))
   print(global_quality)
@@ -624,7 +624,7 @@ if __name__=="__main__":
   "Global Quality":13
   }
   
-  ModelWLV=ProcessPLS(cv=RepeatedKFold(5,1,random_state=999), max_lv=np.inf,overwrite_lv=True,inner_forced_lv=inner_forced_lv,outer_forced_lv=outer_forced_lv, name="Process PLS with W Outer LV")
+  ModelWLV=ProcessPLS(cv=RepeatedKFold(n_splits=5,n_repeats=1,random_state=999), max_lv=np.inf,overwrite_lv=True,inner_forced_lv=inner_forced_lv,outer_forced_lv=outer_forced_lv, name="Process PLS with W Outer LV")
   ModelWLV.fit(X,Y,matrix)
   ModelWLV.plot()
   
