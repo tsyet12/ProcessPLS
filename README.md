@@ -123,7 +123,7 @@ y_pred= model.predict(Xnew)
 
 ```
 
-
+# Colab Example ![Here](https://colab.research.google.com/drive/1tEW7zRytpWzDoLw95N783bAAvEUhzKvX#scrollTo=f1mx9z0LyRml)
 
 
 
