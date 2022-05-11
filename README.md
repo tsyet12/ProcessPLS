@@ -8,21 +8,21 @@ Implementation by Sin Yong Teng. Radboud University Nijmegen, the Netherlands.
 ## Implementation
 In this code implementation, the sklearn syntax is used. Furthermore, the ProcessPLS algorithm has been made to be represented in directed graphs data structure. This allows for more flexibility to be used with graph theory routines. 
 
-## Functions
+# Functions
 
-# Install the library
+## Install the library
 ```bat
 pip install processPLS
 ```
 
-# Get the data
+## Get the data
 ```python
 from processPLS.model import *
 from processPLS.data import *
 X,Y,matrix=ValdeLoirData() #Get the data conviniently
 ```
 
-# Alternatively, you can import the data yourself like this:
+## Alternatively, you can import the data yourself like this:
 ```python
 df=pd.read_csv(r'.\ValdeLoirData.csv')
 df=df.drop(columns=df.columns[0])
@@ -55,7 +55,7 @@ columns=list(X.keys())+list(Y.keys())
 
 ```
 
-# Call and Fit the Process PLS model
+## Call and Fit the Process PLS model
 ```python
 import matplotlib.pyplot as plt
 model = ProcessPLS()
@@ -64,7 +64,7 @@ model.plot
 plt.show()
 ```
 
-# Main Function Arguments
+## Main Function Arguments
 ```python
 Process_PLS(cv=RepeatedKFold(n_splits=5,n_repeats=2,random_state=999),scoring='neg_mean_squared_error',max_lv=30,overwrite_lv=False,inner_forced_lv=None,outer_forced_lv=None,name=None)
 
