@@ -18,7 +18,7 @@ pip install processPLS
 ## Get the data
 ```python
 from processPLS.model import *
-from processPLS.data import *
+from processPLS.datasets import *
 X,Y,matrix=ValdeLoirData() #Get the data conviniently
 ```
 
