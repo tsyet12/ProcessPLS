@@ -116,6 +116,14 @@ original==True:  The function returns the raw data (dataframe) with both X and Y
 
 ```
 
+## Inference/ Prediction for New Data
+
+```python
+y_pred= model.predict(Xnew)
+
+```
+
+
 
 
 
