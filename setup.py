@@ -16,7 +16,7 @@ if os.path.isfile(requirementPath):
 
 
 setup(name='ProcessPLS', 
-version='1.0', 
+version='1.01', 
 license='BSD 2-Clause',
 description="Implementation of ProcessPLS in Python",
 author='Sin Yong Teng',
