@@ -144,4 +144,4 @@ https://gitlab.science.ru.nl/toffermans/matlab-process-pls/-/tree/main/
 
 ## How to cite this software
 
-S.Y. Teng. (2022). tsyet12/ProcessPLS: Zenodo Release (zenodo). Zenodo. https://doi.org/10.5281/zenodo.7074754
+S.Y. Teng. (2022). tsyet12/ProcessPLS:An Implementation of ProcessPLS in Python, Zenodo Release (zenodo). Zenodo. https://doi.org/10.5281/zenodo.7074754
