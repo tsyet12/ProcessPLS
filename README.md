@@ -1,5 +1,6 @@
 # ProcessPLS
 An Implementation of ProcessPLS in Python
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7074754.svg)](https://doi.org/10.5281/zenodo.7074754)
 
 
 ## Code Writter
@@ -139,3 +140,8 @@ van Kollenburg, G., Bouman, R., Offermans, T., Gerretzen, J., Buydens, L., van M
 
 For MATLAB Implementation, see this repository written by Tim Offermans.
 https://gitlab.science.ru.nl/toffermans/matlab-process-pls/-/tree/main/
+
+
+## How to cite this software
+
+S.Y. Teng. (2022). tsyet12/ProcessPLS: Zenodo Release (zenodo). Zenodo. https://doi.org/10.5281/zenodo.7074754
