@@ -35,7 +35,7 @@ def svd_signstable(X):
         
         for j in range(Y.shape[1]):
             temp_prod=(U[:,k].T)@(Y[:,j])
-            s_left_parts[:,j]=np.sign(temp_prod)*(temp_prod**2)
+            s_left_parts[:,j]=(np.sign(temp_prod)+(temp_prod==0))*(temp_prod**2)
         
         s_left[:,k]=np.sum(s_left_parts)
         
@@ -50,7 +50,7 @@ def svd_signstable(X):
         s_right_parts=np.zeros((1,Y.shape[0]))
         for i in range(Y.shape[0]):
             temp_prod= (V[:,k].T)@(Y[i,:].T)
-            s_right_parts[:,i]=np.sign(temp_prod)*(temp_prod**2)
+            s_right_parts[:,i]=(np.sign(temp_prod)+(temp_prod==0))*(temp_prod**2)
         s_right[:,k]=np.sum(s_right_parts)    
 
     #step 3
@@ -62,8 +62,8 @@ def svd_signstable(X):
                 s_right[:,k]=-s_right[:,k]
     left=np.zeros((K,K))
     right=np.zeros((K,K))
-    np.fill_diagonal(left,np.sign(s_left))
-    np.fill_diagonal(right,np.sign(s_right))
+    np.fill_diagonal(left,np.sign(s_left)+(s_left==0))
+    np.fill_diagonal(right,np.sign(s_right)+(s_right==0))
     U=U@left
     V=V@right
     return U, D, V
@@ -585,7 +585,7 @@ class ProcessPLS(BaseEstimator):
 
 
 if __name__=="__main__":      
-  df=pd.read_csv(r'C:\Users\User\Desktop\processPLS\processPLS\data\ValdeLoirData.csv')
+  df=pd.read_csv(r"C:\Users\syteng\Desktop\code\ProcessPLS\processPLS\data\ValdeLoirData.csv")
   df=df.drop(columns=df.columns[0])
   smell_at_rest=df.iloc[:,:5]
   view=df.iloc[:,5:8]
