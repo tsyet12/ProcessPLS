@@ -61,7 +61,7 @@ columns=list(X.keys())+list(Y.keys())
 import matplotlib.pyplot as plt
 model = ProcessPLS()
 model.fit(X,Y,matrix)
-model.plot
+model.plot()
 plt.show()
 ```
 
