@@ -393,9 +393,9 @@ class ProcessPLS(BaseEstimator):
           outer_y_weights=inner_scaler_y.transform(simpls.y_weights_) #y weights are scaled
           G.add_node(node,outer_model=simpls,inner_scaler_x=inner_scaler_x,inner_scaler_y=inner_scaler_y,outer_x_scores=outer_x_scores,outer_x_weights=outer_x_weights,outer_y_scores=outer_y_scores,outer_y_weights=outer_y_weights) #put models in graph
           if node not in list(Y.keys()):     #only choose nodes which are not the 'end node'
-              G.add_node(node,exp_var=simpls.xfrac_var_,R2m=np.trace(simpls.x_loadings_.T*simpls.x_loadings_.T)/(simpls.x_scores_.shape[0]-1))
+              G.add_node(node,exp_var=simpls.xfrac_var_,R2m=np.trace(simpls.x_loadings_.T@simpls.x_loadings_)/(simpls.x_scores_.shape[0]-1))
           else:
-              G.add_node(node,exp_var=simpls.yfrac_var_,R2m=np.trace(simpls.y_loadings_.T*simpls.y_loadings_.T)/(simpls.y_scores_.shape[0]-1))
+              G.add_node(node,exp_var=simpls.yfrac_var_,R2m=np.trace(simpls.y_loadings_.T@simpls.y_loadings_)/(simpls.y_scores_.shape[0]-1))
           
       ######## INNER MODEL###########
       ##Make the inner models on target nodes##
